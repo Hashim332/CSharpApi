@@ -18,7 +18,7 @@ namespace TaskApi.Controllers
 
         // GET: api/tasks
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Task>>> GetTasks()
+        public async Task<ActionResult<IEnumerable<TaskApi.Models.Task>>> GetTasks()
         {
             try
             {
@@ -36,7 +36,7 @@ namespace TaskApi.Controllers
 
         // GET: api/tasks/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Task>> GetTask(int id)
+        public async Task<ActionResult<TaskApi.Models.Task>> GetTask(int id)
         {
             try
             {
@@ -57,7 +57,7 @@ namespace TaskApi.Controllers
 
         // POST: api/tasks
         [HttpPost]
-        public async Task<ActionResult<Task>> CreateTask(Task task)
+        public async Task<ActionResult<TaskApi.Models.Task>> CreateTask(TaskApi.Models.Task task)
         {
             try
             {
@@ -85,7 +85,7 @@ namespace TaskApi.Controllers
 
         // PUT: api/tasks/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTask(int id, Task taskUpdate)
+        public async Task<IActionResult> UpdateTask(int id, TaskApi.Models.Task taskUpdate)
         {
             try
             {
