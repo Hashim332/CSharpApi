@@ -1,6 +1,7 @@
 # C# .NET Task Management API - Complete Implementation Guide
 
-> **Learning Goal:** I'm using the plan below to learn C# after several iterations with Claude, I landed on this comprehensive guide to build a complete Task Management API  
+I'm using the plan below to learn C# after several iterations with Claude. I landed on this comprehensive guide to build a complete Task Management API.
+
 > **Goal:** Build a simple Task Management API in 4 hours  
 > **Audience:** Node.js developer learning C# and PostgreSQL  
 > **Scope:** Single entity CRUD API with enterprise patterns  
