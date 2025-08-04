@@ -1,5 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using TaskApi.Data;
 using TaskApi.Models;
 
@@ -16,16 +20,9 @@ namespace TaskApi.Controllers
             _context = context;
         }
 
-        // GET: api/tasks/health
-        [HttpGet("health")]
-        public async Task<ActionResult<object>> GetHealth()
-        {
-            return Ok(new { status = "healthy" });
-        }
-
         // GET: api/tasks
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TaskApi.Models.Task>>> GetTasks()
+        public async Task<ActionResult<IEnumerable<TaskItem>>> GetTasks()
         {
             try
             {
@@ -43,7 +40,7 @@ namespace TaskApi.Controllers
 
         // GET: api/tasks/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<TaskApi.Models.Task>> GetTask(int id)
+        public async Task<ActionResult<TaskItem>> GetTask(int id)
         {
             try
             {
@@ -64,7 +61,7 @@ namespace TaskApi.Controllers
 
         // POST: api/tasks
         [HttpPost]
-        public async Task<ActionResult<TaskApi.Models.Task>> CreateTask([FromBody] CreateTaskDto taskDto)
+        public async Task<ActionResult<TaskItem>> CreateTask(CreateTaskDto createTaskDto)
         {
             try
             {
@@ -75,20 +72,23 @@ namespace TaskApi.Controllers
                 }
 
                 // Create new task from DTO
-                var task = new TaskApi.Models.Task
+                var task = new TaskItem
                 {
-                    Title = taskDto.Title,
-                    Description = taskDto.Description,
-                    Status = taskDto.Status,
-                    Priority = taskDto.Priority,
-                    CreatedAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc),
-                    UpdatedAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc)
+                    Title = createTaskDto.Title,
+                    Description = createTaskDto.Description,
+                    Status = createTaskDto.Status,
+                    Priority = createTaskDto.Priority,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
                 };
 
-                // Convert DueDate string to UTC DateTime if provided
-                if (!string.IsNullOrEmpty(taskDto.DueDate) && DateTime.TryParse(taskDto.DueDate, out DateTime parsedDueDate))
+                // Handle dueDate conversion
+                if (!string.IsNullOrEmpty(createTaskDto.DueDate))
                 {
-                    task.DueDate = DateTime.SpecifyKind(parsedDueDate, DateTimeKind.Utc);
+                    if (DateTime.TryParse(createTaskDto.DueDate, out DateTime parsedDate))
+                    {
+                        task.DueDate = DateTime.SpecifyKind(parsedDate, DateTimeKind.Utc);
+                    }
                 }
 
                 _context.Tasks.Add(task);
@@ -105,7 +105,7 @@ namespace TaskApi.Controllers
 
         // PUT: api/tasks/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTask(int id, TaskApi.Models.Task taskUpdate)
+        public async Task<IActionResult> UpdateTask(int id, TaskItem taskUpdate)
         {
             try
             {
@@ -163,27 +163,6 @@ namespace TaskApi.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, new { error = "Internal server error", details = ex.Message });
-            }
-        }
-
-        [HttpGet("db-info")]
-        public async Task<IActionResult> GetDatabaseInfo()
-        {
-            try
-            {
-                var connection = _context.Database.GetDbConnection();
-                await connection.OpenAsync();
-                var databaseName = connection.Database;
-                await connection.CloseAsync();
-                
-                return Ok(new { 
-                    DatabaseName = databaseName,
-                    ConnectionString = _context.Database.GetConnectionString()?.Split(';').FirstOrDefault(s => s.StartsWith("Database="))
-                });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { Error = ex.Message });
             }
         }
     }

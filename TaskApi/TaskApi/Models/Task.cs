@@ -1,8 +1,9 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace TaskApi.Models
 {
-    public class Task
+    public class TaskItem
     {
         // Primary key - EF Core convention
         public int Id { get; set; }

@@ -11,14 +11,14 @@ namespace TaskApi.Data
         }
 
         // DbSet represents a table in the database
-        public DbSet<TaskApi.Models.Task> Tasks { get; set; }
+        public DbSet<TaskApi.Models.TaskItem> Tasks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             // Configure Task entity
-            modelBuilder.Entity<TaskApi.Models.Task>(entity =>
+            modelBuilder.Entity<TaskApi.Models.TaskItem>(entity =>
             {
                 // Set table name
                 entity.ToTable("Tasks");

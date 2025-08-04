@@ -114,72 +114,37 @@ function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-600" />
-          <p className="text-gray-600">Loading tasks...</p>
+      <div className='min-h-screen bg-gray-50 flex items-center justify-center'>
+        <div className='text-center'>
+          <RefreshCw className='h-8 w-8 animate-spin mx-auto mb-4 text-blue-600' />
+          <p className='text-gray-600'>Loading tasks...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
+    <div className='min-h-screen bg-gray-50'>
+      <div className='container mx-auto px-4 py-8'>
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-6">
+        <div className='mb-8'>
+          <div className='flex items-center justify-between mb-6'>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Task Manager</h1>
-              <p className="text-gray-600 mt-1">
+              <h1 className='text-3xl font-bold text-gray-900'>Task Manager</h1>
+              <p className='text-gray-600 mt-1'>
                 Manage your tasks efficiently
               </p>
             </div>
-            <div className="flex items-center gap-4">
-              <Button
-                variant="outline"
-                onClick={fetchTasks}
-                disabled={loading}
-                className="flex items-center gap-2"
-              >
-                <RefreshCw className="h-4 w-4" />
-                Refresh
-              </Button>
-            </div>
-          </div>
-        </div>
-
-        {/* Error Message */}
-        {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-            <div className="flex items-center gap-2">
-              <AlertCircle className="h-5 w-5 text-red-600" />
-              <p className="text-red-800">{error}</p>
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setError(null)}
-              className="mt-2"
-            >
-              Dismiss
-            </Button>
-          </div>
-        )}
-
-        {/* Tasks Grid */}
-        {tasks.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="max-w-md mx-auto">
+            <div className='flex items-center gap-4'>
               <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
                 <DialogTrigger asChild>
-                  <Button className="p-4 bg-blue-600 hover:bg-blue-700 text-white rounded-full w-auto h-auto mx-auto mb-4 flex items-center gap-2 shadow-lg hover:shadow-xl transition-all duration-200 px-6 py-3">
-                    <Plus className="h-5 w-5" />
-                    <span className="font-medium">Add Task</span>
+                  <Button className='flex items-center gap-2'>
+                    <Plus className='h-4 w-4' />
+                    Add Task
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-md">
-                  <DialogTitle className="sr-only">
+                <DialogContent className='sm:max-w-md'>
+                  <DialogTitle className='sr-only'>
                     {editingTask ? "Edit Task" : "Add New Task"}
                   </DialogTitle>
                   <TaskForm
@@ -190,13 +155,52 @@ function App() {
                   />
                 </DialogContent>
               </Dialog>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <Button
+                variant='outline'
+                onClick={fetchTasks}
+                disabled={loading}
+                className='flex items-center gap-2'
+              >
+                <RefreshCw className='h-4 w-4' />
+                Refresh
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Error Message */}
+        {error && (
+          <div className='mb-6 p-4 bg-red-50 border border-red-200 rounded-lg'>
+            <div className='flex items-center gap-2'>
+              <AlertCircle className='h-5 w-5 text-red-600' />
+              <p className='text-red-800'>{error}</p>
+            </div>
+            <Button
+              variant='outline'
+              size='sm'
+              onClick={() => setError(null)}
+              className='mt-2'
+            >
+              Dismiss
+            </Button>
+          </div>
+        )}
+
+        {/* Tasks Grid */}
+        {tasks.length === 0 ? (
+          <div className='text-center py-12'>
+            <div className='max-w-md mx-auto'>
+              <h3 className='text-lg font-semibold text-gray-900 mb-2'>
                 No tasks yet
               </h3>
+              <p className='text-gray-600'>
+                Click the "Add Task" button in the header to create your first
+                task.
+              </p>
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
             {tasks.map((task) => (
               <TaskCard
                 key={task.id}
