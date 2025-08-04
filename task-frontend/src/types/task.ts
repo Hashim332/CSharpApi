@@ -10,17 +10,17 @@ export interface Task {
 }
 
 export enum TaskStatus {
-  Pending = "Pending",
-  InProgress = "InProgress",
-  Completed = "Completed",
-  Cancelled = "Cancelled"
+  Pending = 0,
+  InProgress = 1,
+  Completed = 2,
+  Cancelled = 3,
 }
 
 export enum TaskPriority {
-  Low = "Low",
-  Medium = "Medium",
-  High = "High",
-  Critical = "Critical"
+  Low = 0,
+  Medium = 1,
+  High = 2,
+  Critical = 3,
 }
 
 export interface CreateTaskRequest {
@@ -38,4 +38,4 @@ export interface UpdateTaskRequest {
   status: TaskStatus;
   priority: TaskPriority;
   dueDate?: string;
-} 
+}

@@ -64,7 +64,7 @@ namespace TaskApi.Controllers
 
         // POST: api/tasks
         [HttpPost]
-        public async Task<ActionResult<TaskApi.Models.Task>> CreateTask(TaskApi.Models.Task task)
+        public async Task<ActionResult<TaskApi.Models.Task>> CreateTask([FromBody] CreateTaskDto taskDto)
         {
             try
             {
@@ -74,9 +74,22 @@ namespace TaskApi.Controllers
                     return BadRequest(ModelState);
                 }
 
-                // Set creation timestamp
-                task.CreatedAt = DateTime.UtcNow;
-                task.UpdatedAt = DateTime.UtcNow;
+                // Create new task from DTO
+                var task = new TaskApi.Models.Task
+                {
+                    Title = taskDto.Title,
+                    Description = taskDto.Description,
+                    Status = taskDto.Status,
+                    Priority = taskDto.Priority,
+                    CreatedAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc),
+                    UpdatedAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc)
+                };
+
+                // Convert DueDate string to UTC DateTime if provided
+                if (!string.IsNullOrEmpty(taskDto.DueDate) && DateTime.TryParse(taskDto.DueDate, out DateTime parsedDueDate))
+                {
+                    task.DueDate = DateTime.SpecifyKind(parsedDueDate, DateTimeKind.Utc);
+                }
 
                 _context.Tasks.Add(task);
                 await _context.SaveChangesAsync();
@@ -150,6 +163,27 @@ namespace TaskApi.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, new { error = "Internal server error", details = ex.Message });
+            }
+        }
+
+        [HttpGet("db-info")]
+        public async Task<IActionResult> GetDatabaseInfo()
+        {
+            try
+            {
+                var connection = _context.Database.GetDbConnection();
+                await connection.OpenAsync();
+                var databaseName = connection.Database;
+                await connection.CloseAsync();
+                
+                return Ok(new { 
+                    DatabaseName = databaseName,
+                    ConnectionString = _context.Database.GetConnectionString()?.Split(';').FirstOrDefault(s => s.StartsWith("Database="))
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Error = ex.Message });
             }
         }
     }

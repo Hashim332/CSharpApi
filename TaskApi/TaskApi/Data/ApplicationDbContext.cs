@@ -36,11 +36,11 @@ namespace TaskApi.Data
 
                 // Configure enums
                 entity.Property(e => e.Status)
-                    .HasConversion<string>()
+                    .HasConversion<int>()
                     .IsRequired();
 
                 entity.Property(e => e.Priority)
-                    .HasConversion<string>()
+                    .HasConversion<int>()
                     .IsRequired();
 
                 // Configure timestamps

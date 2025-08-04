@@ -1,12 +1,22 @@
-import { useState, useEffect } from 'react';
-import { Task, TaskStatus, TaskPriority, CreateTaskRequest, UpdateTaskRequest } from '../types/task';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Textarea } from './ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { Label } from './ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
-import { X } from 'lucide-react';
+import { useState, useEffect } from "react";
+import type {
+  Task,
+  CreateTaskRequest,
+  UpdateTaskRequest,
+} from "../types/task.js";
+import { TaskStatus, TaskPriority } from "../types/task.js";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { Textarea } from "./ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
+import { Label } from "./ui/label";
+import { CardContent, CardHeader, CardTitle } from "./ui/card";
 
 interface TaskFormProps {
   task?: Task;
@@ -15,13 +25,18 @@ interface TaskFormProps {
   isLoading?: boolean;
 }
 
-export function TaskForm({ task, onSubmit, onCancel, isLoading = false }: TaskFormProps) {
+export function TaskForm({
+  task,
+  onSubmit,
+  onCancel,
+  isLoading = false,
+}: TaskFormProps) {
   const [formData, setFormData] = useState<CreateTaskRequest>({
-    title: '',
-    description: '',
+    title: "",
+    description: "",
     status: TaskStatus.Pending,
     priority: TaskPriority.Medium,
-    dueDate: '',
+    dueDate: "",
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -30,10 +45,10 @@ export function TaskForm({ task, onSubmit, onCancel, isLoading = false }: TaskFo
     if (task) {
       setFormData({
         title: task.title,
-        description: task.description || '',
+        description: task.description || "",
         status: task.status,
         priority: task.priority,
-        dueDate: task.dueDate ? task.dueDate.split('T')[0] : '',
+        dueDate: task.dueDate ? task.dueDate.split("T")[0] : "",
       });
     }
   }, [task]);
@@ -42,13 +57,7 @@ export function TaskForm({ task, onSubmit, onCancel, isLoading = false }: TaskFo
     const newErrors: Record<string, string> = {};
 
     if (!formData.title.trim()) {
-      newErrors.title = 'Title is required';
-    } else if (formData.title.length > 200) {
-      newErrors.title = 'Title cannot be longer than 200 characters';
-    }
-
-    if (formData.description && formData.description.length > 1000) {
-      newErrors.description = 'Description cannot be longer than 1000 characters';
+      newErrors.title = "Title is required";
     }
 
     setErrors(newErrors);
@@ -57,7 +66,7 @@ export function TaskForm({ task, onSubmit, onCancel, isLoading = false }: TaskFo
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -76,27 +85,22 @@ export function TaskForm({ task, onSubmit, onCancel, isLoading = false }: TaskFo
     }
   };
 
-  const handleInputChange = (field: keyof CreateTaskRequest, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+  const handleInputChange = (
+    field: keyof CreateTaskRequest,
+    value: string | number
+  ) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
+      setErrors((prev) => ({ ...prev, [field]: "" }));
     }
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+    <div className="w-full max-w-md mx-auto">
+      <CardHeader className="pb-4">
         <CardTitle className="text-lg font-semibold">
-          {task ? 'Edit Task' : 'Create New Task'}
+          {task ? "Edit Task" : "Create New Task"}
         </CardTitle>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onCancel}
-          className="h-8 w-8 p-0"
-        >
-          <X className="h-4 w-4" />
-        </Button>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -105,9 +109,9 @@ export function TaskForm({ task, onSubmit, onCancel, isLoading = false }: TaskFo
             <Input
               id="title"
               value={formData.title}
-              onChange={(e) => handleInputChange('title', e.target.value)}
+              onChange={(e) => handleInputChange("title", e.target.value)}
               placeholder="Enter task title"
-              className={errors.title ? 'border-red-500' : ''}
+              className={errors.title ? "border-red-500" : ""}
             />
             {errors.title && (
               <p className="text-sm text-red-500">{errors.title}</p>
@@ -119,30 +123,31 @@ export function TaskForm({ task, onSubmit, onCancel, isLoading = false }: TaskFo
             <Textarea
               id="description"
               value={formData.description}
-              onChange={(e) => handleInputChange('description', e.target.value)}
+              onChange={(e) => handleInputChange("description", e.target.value)}
               placeholder="Enter task description (optional)"
               rows={3}
-              className={errors.description ? 'border-red-500' : ''}
             />
-            {errors.description && (
-              <p className="text-sm text-red-500">{errors.description}</p>
-            )}
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="status">Status</Label>
               <Select
-                value={formData.status}
-                onValueChange={(value) => handleInputChange('status', value)}
+                value={formData.status.toString()}
+                onValueChange={(value) =>
+                  handleInputChange("status", parseInt(value))
+                }
               >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   {Object.values(TaskStatus).map((status) => (
-                    <SelectItem key={status} value={status}>
-                      {status}
+                    <SelectItem key={status} value={status.toString()}>
+                      {status === TaskStatus.Pending && "Pending"}
+                      {status === TaskStatus.InProgress && "InProgress"}
+                      {status === TaskStatus.Completed && "Completed"}
+                      {status === TaskStatus.Cancelled && "Cancelled"}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -152,16 +157,21 @@ export function TaskForm({ task, onSubmit, onCancel, isLoading = false }: TaskFo
             <div className="space-y-2">
               <Label htmlFor="priority">Priority</Label>
               <Select
-                value={formData.priority}
-                onValueChange={(value) => handleInputChange('priority', value)}
+                value={formData.priority.toString()}
+                onValueChange={(value) =>
+                  handleInputChange("priority", parseInt(value))
+                }
               >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   {Object.values(TaskPriority).map((priority) => (
-                    <SelectItem key={priority} value={priority}>
-                      {priority}
+                    <SelectItem key={priority} value={priority.toString()}>
+                      {priority === TaskPriority.Low && "Low"}
+                      {priority === TaskPriority.Medium && "Medium"}
+                      {priority === TaskPriority.High && "High"}
+                      {priority === TaskPriority.Critical && "Critical"}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -175,17 +185,13 @@ export function TaskForm({ task, onSubmit, onCancel, isLoading = false }: TaskFo
               id="dueDate"
               type="date"
               value={formData.dueDate}
-              onChange={(e) => handleInputChange('dueDate', e.target.value)}
+              onChange={(e) => handleInputChange("dueDate", e.target.value)}
             />
           </div>
 
           <div className="flex gap-2 pt-2">
-            <Button
-              type="submit"
-              className="flex-1"
-              disabled={isLoading}
-            >
-              {isLoading ? 'Saving...' : (task ? 'Update Task' : 'Create Task')}
+            <Button type="submit" className="flex-1" disabled={isLoading}>
+              {isLoading ? "Saving..." : task ? "Update Task" : "Create Task"}
             </Button>
             <Button
               type="button"
@@ -198,6 +204,6 @@ export function TaskForm({ task, onSubmit, onCancel, isLoading = false }: TaskFo
           </div>
         </form>
       </CardContent>
-    </Card>
+    </div>
   );
-} 
+}

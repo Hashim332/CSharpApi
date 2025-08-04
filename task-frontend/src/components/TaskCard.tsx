@@ -1,8 +1,9 @@
-import { Task, TaskStatus, TaskPriority } from '../types/task';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
-import { Badge } from './ui/badge';
-import { Button } from './ui/button';
-import { Edit, Trash2, Calendar, Clock } from 'lucide-react';
+import type { Task } from "../types/task.js";
+import { TaskStatus, TaskPriority } from "../types/task.js";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Badge } from "./ui/badge";
+import { Button } from "./ui/button";
+import { Edit, Trash2 } from "lucide-react";
 
 interface TaskCardProps {
   task: Task;
@@ -13,39 +14,61 @@ interface TaskCardProps {
 const getStatusColor = (status: TaskStatus) => {
   switch (status) {
     case TaskStatus.Pending:
-      return 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200';
+      return "bg-yellow-100 text-yellow-800";
     case TaskStatus.InProgress:
-      return 'bg-blue-100 text-blue-800 hover:bg-blue-200';
+      return "bg-blue-100 text-blue-800";
     case TaskStatus.Completed:
-      return 'bg-green-100 text-green-800 hover:bg-green-200';
+      return "bg-green-100 text-green-800";
     case TaskStatus.Cancelled:
-      return 'bg-red-100 text-red-800 hover:bg-red-200';
+      return "bg-red-100 text-red-800";
     default:
-      return 'bg-gray-100 text-gray-800 hover:bg-gray-200';
+      return "bg-gray-100 text-gray-800";
   }
 };
 
 const getPriorityColor = (priority: TaskPriority) => {
   switch (priority) {
     case TaskPriority.Low:
-      return 'bg-gray-100 text-gray-800 hover:bg-gray-200';
+      return "bg-gray-100 text-gray-800";
     case TaskPriority.Medium:
-      return 'bg-blue-100 text-blue-800 hover:bg-blue-200';
+      return "bg-blue-100 text-blue-800";
     case TaskPriority.High:
-      return 'bg-orange-100 text-orange-800 hover:bg-orange-200';
+      return "bg-orange-100 text-orange-800";
     case TaskPriority.Critical:
-      return 'bg-red-100 text-red-800 hover:bg-red-200';
+      return "bg-red-100 text-red-800";
     default:
-      return 'bg-gray-100 text-gray-800 hover:bg-gray-200';
+      return "bg-gray-100 text-gray-800";
   }
 };
 
-const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
+const getStatusText = (status: TaskStatus) => {
+  switch (status) {
+    case TaskStatus.Pending:
+      return "Pending";
+    case TaskStatus.InProgress:
+      return "InProgress";
+    case TaskStatus.Completed:
+      return "Completed";
+    case TaskStatus.Cancelled:
+      return "Cancelled";
+    default:
+      return "Unknown";
+  }
+};
+
+const getPriorityText = (priority: TaskPriority) => {
+  switch (priority) {
+    case TaskPriority.Low:
+      return "Low";
+    case TaskPriority.Medium:
+      return "Medium";
+    case TaskPriority.High:
+      return "High";
+    case TaskPriority.Critical:
+      return "Critical";
+    default:
+      return "Unknown";
+  }
 };
 
 export function TaskCard({ task, onEdit, onDelete }: TaskCardProps) {
@@ -53,10 +76,10 @@ export function TaskCard({ task, onEdit, onDelete }: TaskCardProps) {
     <Card className="hover:shadow-md transition-shadow">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
-          <CardTitle className="text-lg font-semibold line-clamp-2">
+          <CardTitle className="text-lg font-semibold line-clamp-2 flex-1 mr-4">
             {task.title}
           </CardTitle>
-          <div className="flex gap-2">
+          <div className="flex gap-1">
             <Button
               variant="ghost"
               size="sm"
@@ -77,10 +100,10 @@ export function TaskCard({ task, onEdit, onDelete }: TaskCardProps) {
         </div>
         <div className="flex gap-2 flex-wrap">
           <Badge className={getStatusColor(task.status)}>
-            {task.status}
+            {getStatusText(task.status)}
           </Badge>
           <Badge className={getPriorityColor(task.priority)}>
-            {task.priority}
+            {getPriorityText(task.priority)}
           </Badge>
         </div>
       </CardHeader>
@@ -90,19 +113,15 @@ export function TaskCard({ task, onEdit, onDelete }: TaskCardProps) {
             {task.description}
           </p>
         )}
-        <div className="flex items-center gap-4 text-xs text-gray-500">
-          <div className="flex items-center gap-1">
-            <Clock className="h-3 w-3" />
-            <span>Created: {formatDate(task.createdAt)}</span>
-          </div>
+        <div className="text-xs text-gray-500">
+          Created: {new Date(task.createdAt).toLocaleDateString()}
           {task.dueDate && (
-            <div className="flex items-center gap-1">
-              <Calendar className="h-3 w-3" />
-              <span>Due: {formatDate(task.dueDate)}</span>
-            </div>
+            <span className="ml-4">
+              Due: {new Date(task.dueDate).toLocaleDateString()}
+            </span>
           )}
         </div>
       </CardContent>
     </Card>
   );
-} 
+}

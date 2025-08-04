@@ -45,4 +45,21 @@ namespace TaskApi.Models
         High,
         Critical
     }
+
+    // DTO for creating tasks
+    public class CreateTaskDto
+    {
+        [Required]
+        [StringLength(200, ErrorMessage = "Title cannot be longer than 200 characters")]
+        public string Title { get; set; } = string.Empty;
+
+        [StringLength(1000, ErrorMessage = "Description cannot be longer than 1000 characters")]
+        public string? Description { get; set; }
+
+        public TaskStatus Status { get; set; } = TaskStatus.Pending;
+
+        public TaskPriority Priority { get; set; } = TaskPriority.Medium;
+
+        public string? DueDate { get; set; }
+    }
 }
