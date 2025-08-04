@@ -7,6 +7,7 @@ import type {
 import { TaskApiService } from "./services/api";
 import { TaskCard } from "./components/TaskCard";
 import { TaskForm } from "./components/TaskForm";
+import { TaskStats } from "./components/TaskStats";
 import { Button } from "./components/ui/button";
 import {
   Dialog,
@@ -14,7 +15,7 @@ import {
   DialogTrigger,
   DialogTitle,
 } from "./components/ui/dialog";
-import { Plus, RefreshCw, AlertCircle } from "lucide-react";
+import { Plus, RefreshCw, AlertCircle, BarChart3, List } from "lucide-react";
 
 function App() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -23,6 +24,7 @@ function App() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [viewMode, setViewMode] = useState<"stats" | "all">("stats");
 
   const fetchTasks = async () => {
     try {
@@ -136,7 +138,16 @@ function App() {
               </p>
             </div>
             <div className='flex items-center gap-4'>
-              <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
+              <Dialog
+                open={isFormOpen}
+                onOpenChange={(open) => {
+                  setIsFormOpen(open);
+                  if (open && editingTask) {
+                    // Reset editingTask when opening dialog for new task
+                    setEditingTask(null);
+                  }
+                }}
+              >
                 <DialogTrigger asChild>
                   <Button className='flex items-center gap-2'>
                     <Plus className='h-4 w-4' />
@@ -168,6 +179,28 @@ function App() {
           </div>
         </div>
 
+        {/* View Mode Tabs */}
+        <div className='mb-6'>
+          <div className='flex items-center gap-2 border-b border-gray-200'>
+            <Button
+              variant={viewMode === "stats" ? "default" : "ghost"}
+              onClick={() => setViewMode("stats")}
+              className='flex items-center gap-2'
+            >
+              <BarChart3 className='h-4 w-4' />
+              Dashboard
+            </Button>
+            <Button
+              variant={viewMode === "all" ? "default" : "ghost"}
+              onClick={() => setViewMode("all")}
+              className='flex items-center gap-2'
+            >
+              <List className='h-4 w-4' />
+              All Tasks
+            </Button>
+          </div>
+        </div>
+
         {/* Error Message */}
         {error && (
           <div className='mb-6 p-4 bg-red-50 border border-red-200 rounded-lg'>
@@ -186,30 +219,42 @@ function App() {
           </div>
         )}
 
-        {/* Tasks Grid */}
-        {tasks.length === 0 ? (
-          <div className='text-center py-12'>
-            <div className='max-w-md mx-auto'>
-              <h3 className='text-lg font-semibold text-gray-900 mb-2'>
-                No tasks yet
-              </h3>
-              <p className='text-gray-600'>
-                Click the "Add Task" button in the header to create your first
-                task.
-              </p>
-            </div>
-          </div>
-        ) : (
-          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-            {tasks.map((task) => (
-              <TaskCard
-                key={task.id}
-                task={task}
-                onEdit={handleEditTask}
-                onDelete={handleDeleteTask}
-              />
-            ))}
-          </div>
+        {/* Content based on view mode */}
+        {viewMode === "stats" && (
+          <TaskStats
+            tasks={tasks}
+            onEdit={handleEditTask}
+            onDelete={handleDeleteTask}
+          />
+        )}
+
+        {viewMode === "all" && (
+          <>
+            {tasks.length === 0 ? (
+              <div className='text-center py-12'>
+                <div className='max-w-md mx-auto'>
+                  <h3 className='text-lg font-semibold text-gray-900 mb-2'>
+                    No tasks yet
+                  </h3>
+                  <p className='text-gray-600'>
+                    Click the "Add Task" button in the header to create your
+                    first task.
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+                {tasks.map((task) => (
+                  <TaskCard
+                    key={task.id}
+                    task={task}
+                    onEdit={handleEditTask}
+                    onDelete={handleDeleteTask}
+                  />
+                ))}
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

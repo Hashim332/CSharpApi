@@ -45,7 +45,9 @@ export class TaskApiService {
       console.log("Error response body:", errorText);
       throw new Error("Failed to create task");
     }
-    return response.json();
+    const createdTask = await response.json();
+    console.log("Created task received from API:", createdTask);
+    return createdTask;
   }
 
   static async updateTask(task: UpdateTaskRequest): Promise<void> {
