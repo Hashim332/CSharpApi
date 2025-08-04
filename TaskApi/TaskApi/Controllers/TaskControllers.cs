@@ -16,6 +16,13 @@ namespace TaskApi.Controllers
             _context = context;
         }
 
+        // GET: api/tasks/health
+        [HttpGet("health")]
+        public async Task<ActionResult<object>> GetHealth()
+        {
+            return Ok(new { status = "healthy" });
+        }
+
         // GET: api/tasks
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TaskApi.Models.Task>>> GetTasks()
