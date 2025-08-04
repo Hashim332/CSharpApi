@@ -2,6 +2,12 @@
 
 A C# .NET 8 Web API project built to learn backend development with Entity Framework Core and PostgreSQL. This project demonstrates modern C# development practices, database design, and API development.
 
+## 🎨 UI Showcase
+
+![Task Management Interface - Main View](./images/taskapi-fe-1.png "Modern task management interface built with React and TypeScript")
+
+![Task Management Interface - Task Details](./images/taskapi-fe-2.png "Detailed task view with form validation and real-time updates")
+
 ## 🎯 Learning Focus
 
 This project was created specifically to learn **C# backend development**:
@@ -52,6 +58,10 @@ TaskApi/
 - ✅ **Migrations**: Database schema versioning
 - ✅ **Indexed Columns**: Performance optimization
 - ✅ **Proper Data Types**: C# types mapped to SQL types
+
+![Supabase Database Dashboard](./images/taskapi-supabase.png "Supabase PostgreSQL database management interface")
+
+**Database:** The project uses Supabase as the PostgreSQL provider, offering a managed database solution with real-time capabilities.
 
 ## 📚 C# Learning Outcomes
 
